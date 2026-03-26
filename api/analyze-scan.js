@@ -1,4 +1,4 @@
-const Anthropic = require('@anthropic-ai/sdk')
+import Anthropic from '@anthropic-ai/sdk'
 
 const setCorsHeaders = (res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -6,7 +6,7 @@ const setCorsHeaders = (res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   setCorsHeaders(res)
 
   if (req.method === 'OPTIONS') {
@@ -24,10 +24,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Missing currentScan' })
     }
 
-    const anthropic = new Anthropic.default({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    })
-
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     const historicalScans = Array.isArray(allScans) ? allScans : []
 
     const prompt = `You are a fitness and body composition expert analyzing InBody scan results. Based on the following scan data, provide a concise analysis paragraph (3-4 sentences) covering: what improved since previous scans, what declined or needs attention, and ONE specific actionable recommendation. Be encouraging but honest. Focus on the most significant changes.
@@ -40,17 +37,10 @@ Return only the analysis paragraph, no markdown, no bullet points.`
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 512,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
+      messages: [{ role: 'user', content: prompt }],
     })
 
-    const analysis = message.content[0].text.trim()
-
-    return res.status(200).json({ success: true, analysis })
+    return res.status(200).json({ success: true, analysis: message.content[0].text.trim() })
   } catch (err) {
     console.error('analyze-scan error:', err)
     return res.status(500).json({
