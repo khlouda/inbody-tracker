@@ -5,20 +5,20 @@ import { db } from '../lib/firebase.js'
 import AIAnalysisCard from './AIAnalysisCard.jsx'
 
 const METRIC_CONFIG = [
-  { key: 'weight', label: 'Weight', unit: ' kg', color: '#6366f1' },
-  { key: 'skeletalMuscleMass', label: 'Skeletal Muscle Mass', unit: ' kg', color: '#10b981' },
-  { key: 'bodyFatMass', label: 'Body Fat Mass', unit: ' kg', color: '#f43f5e' },
+  { key: 'weight', label: 'Weight', unit: ' lbs', color: '#6366f1' },
+  { key: 'skeletalMuscleMass', label: 'Skeletal Muscle Mass', unit: ' lbs', color: '#10b981' },
+  { key: 'bodyFatMass', label: 'Body Fat Mass', unit: ' lbs', color: '#f43f5e' },
   { key: 'bodyFatPercentage', label: 'Body Fat %', unit: '%', color: '#f97316' },
   { key: 'bmi', label: 'BMI', unit: '', color: '#06b6d4' },
   { key: 'visceralFatLevel', label: 'Visceral Fat Level', unit: '', color: '#f59e0b' },
   { key: 'bmr', label: 'BMR', unit: ' kcal', color: '#8b5cf6' },
-  { key: 'protein', label: 'Protein', unit: ' kg', color: '#ec4899' },
-  { key: 'minerals', label: 'Minerals', unit: ' kg', color: '#84cc16' },
+  { key: 'protein', label: 'Protein', unit: ' lbs', color: '#ec4899' },
+  { key: 'minerals', label: 'Minerals', unit: ' lbs', color: '#84cc16' },
   { key: 'totalBodyWater', label: 'Total Body Water', unit: ' L', color: '#38bdf8' },
   { key: 'intracellularWater', label: 'Intracellular Water', unit: ' L', color: '#22d3ee' },
   { key: 'extracellularWater', label: 'Extracellular Water', unit: ' L', color: '#67e8f9' },
-  { key: 'softLeanMass', label: 'Soft Lean Mass', unit: ' kg', color: '#a3e635' },
-  { key: 'leanBodyMass', label: 'Lean Body Mass', unit: ' kg', color: '#4ade80' },
+  { key: 'softLeanMass', label: 'Soft Lean Mass', unit: ' lbs', color: '#a3e635' },
+  { key: 'leanBodyMass', label: 'Lean Body Mass', unit: ' lbs', color: '#4ade80' },
 ]
 
 function formatDate(dateStr) {
@@ -163,7 +163,7 @@ export default function ScanDetail() {
           <span className="text-5xl font-bold" style={{ color: '#f1f5f9' }}>
             {fmt(scan.weight)}
           </span>
-          <span className="text-xl" style={{ color: '#94a3b8' }}>kg</span>
+          <span className="text-xl" style={{ color: '#94a3b8' }}>lbs</span>
         </div>
       </div>
 

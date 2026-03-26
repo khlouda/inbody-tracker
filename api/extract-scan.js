@@ -39,7 +39,23 @@ export default async function handler(req, res) {
             },
             {
               type: 'text',
-              text: 'You are analyzing an InBody body composition scan. Extract ALL visible metrics and return them as a JSON object. Include these fields if present: date (ISO string YYYY-MM-DD), weight (kg), skeletalMuscleMass (kg), bodyFatMass (kg), bodyFatPercentage (%), bmi, visceralFatLevel (number), bmr (kcal), protein (kg), minerals (kg), totalBodyWater (L), intracellularWater (L), extracellularWater (L), softLeanMass (kg), leanBodyMass (kg), segmentalLeanAnalysis (object with rightArm, leftArm, trunk, rightLeg, leftLeg). Return ONLY a valid JSON object, no markdown, no explanation.',
+              text: `You are analyzing an InBody body composition scan printed in pounds (lbs). Extract ALL visible metrics and return them as a JSON object with these exact fields (use lbs for all weight/mass values):
+- date: the scan date as ISO string YYYY-MM-DD
+- weight: total body weight in lbs (the largest number, typically 100-300 lbs)
+- skeletalMuscleMass: SMM in lbs — this is ONLY the skeletal muscle mass value, NOT the total weight. SMM is always much less than body weight (typically 60-120 lbs)
+- bodyFatMass: body fat mass in lbs
+- bodyFatPercentage: body fat percentage as a number (e.g. 25.3)
+- bmi: BMI as a number
+- visceralFatLevel: visceral fat level as a number
+- bmr: basal metabolic rate in kcal
+- protein: protein in lbs
+- minerals: minerals in lbs
+- totalBodyWater: total body water in lbs
+- softLeanMass: soft lean mass in lbs
+- leanBodyMass: lean body mass in lbs
+- segmentalLeanAnalysis: object with rightArm, leftArm, trunk, rightLeg, leftLeg values in lbs
+
+IMPORTANT: skeletalMuscleMass must be a value clearly labeled "SMM" or "Skeletal Muscle Mass" on the scan — never confuse it with total weight. Return ONLY a valid JSON object, no markdown, no explanation.`,
             },
           ],
         },

@@ -121,11 +121,11 @@ export default function ScanHistory() {
                       <span className="text-2xl font-bold" style={{ color: '#f1f5f9' }}>
                         {fmt(scan.weight)}
                       </span>
-                      <span className="text-sm" style={{ color: '#94a3b8' }}>kg</span>
+                      <span className="text-sm" style={{ color: '#94a3b8' }}>lbs</span>
                       <ChangeChip
                         current={scan.weight}
                         previous={next?.weight}
-                        unit=" kg"
+                        unit=" lbs"
                         better="down"
                       />
                     </div>
@@ -136,7 +136,7 @@ export default function ScanHistory() {
                         <div className="flex items-center gap-1">
                           <span className="text-xs" style={{ color: '#64748b' }}>Muscle</span>
                           <span className="text-xs font-semibold" style={{ color: '#10b981' }}>
-                            {fmt(scan.skeletalMuscleMass)}kg
+                            {fmt(scan.skeletalMuscleMass)} lbs
                           </span>
                         </div>
                       )}
