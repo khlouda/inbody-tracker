@@ -169,7 +169,8 @@ export default function UploadScreen() {
       })
 
       await addDoc(collection(db, 'scans'), docData)
-      navigate('/history')
+      setStep('saved')
+      setTimeout(() => navigate('/history'), 1200)
     } catch (err) {
       setError(err.message || 'Failed to save scan. Please try again.')
       setSaving(false)
@@ -437,6 +438,20 @@ export default function UploadScreen() {
         >
           Start Over
         </button>
+      </div>
+    )
+  }
+
+  // --- STEP: Saved ---
+  if (step === 'saved') {
+    return (
+      <div className="p-4 flex flex-col items-center justify-center min-h-screen gap-4">
+        <div className="w-20 h-20 rounded-full flex items-center justify-center text-4xl"
+          style={{ backgroundColor: 'rgba(34,197,94,0.15)', border: '2px solid #22c55e' }}>
+          ✓
+        </div>
+        <p className="text-xl font-bold" style={{ color: '#22c55e' }}>Scan Saved!</p>
+        <p className="text-sm" style={{ color: '#64748b' }}>Taking you to your history...</p>
       </div>
     )
   }
