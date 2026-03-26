@@ -151,7 +151,7 @@ Projected values at 12 weeks: ${JSON.stringify(predictions.weeks12, null, 2)}
 Return only the insight paragraph, no markdown, no bullet points.`
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 512,
       messages: [{ role: 'user', content: prompt }],
     })

@@ -38,7 +38,7 @@ Historical scans (most recent first): ${JSON.stringify(historicalScans, null, 2)
 Return only the analysis paragraph, no markdown, no bullet points.`
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 512,
       messages: [
         {
