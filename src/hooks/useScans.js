@@ -10,9 +10,15 @@ export function useScans() {
   useEffect(() => {
     const q = query(collection(db, 'scans'), orderBy('date', 'desc'))
 
+    // Fallback: if Firestore doesn't respond in 8s, stop loading
+    const timeout = setTimeout(() => {
+      setLoading(false)
+    }, 8000)
+
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
+        clearTimeout(timeout)
         const docs = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -22,13 +28,17 @@ export function useScans() {
         setError(null)
       },
       (err) => {
+        clearTimeout(timeout)
         console.error('Firestore snapshot error:', err)
         setError('Failed to load scans. Please check your connection.')
         setLoading(false)
       }
     )
 
-    return () => unsubscribe()
+    return () => {
+      clearTimeout(timeout)
+      unsubscribe()
+    }
   }, [])
 
   return { scans, loading, error }

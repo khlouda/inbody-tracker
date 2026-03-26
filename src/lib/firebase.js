@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore'
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,15 +12,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
-export const db = getFirestore(app)
-
-// Enable offline persistence
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code === 'failed-precondition') {
-    // Multiple tabs open, persistence can only be enabled in one tab at a time.
-    console.warn('Firestore persistence failed: multiple tabs open.')
-  } else if (err.code === 'unimplemented') {
-    // The current browser does not support all features required for persistence.
-    console.warn('Firestore persistence not supported in this browser.')
-  }
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
 })
