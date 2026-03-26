@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage } from '../lib/firebase.js'
+import { db } from '../lib/firebase.js'
 import { useScans } from '../hooks/useScans.js'
 import AIAnalysisCard from './AIAnalysisCard.jsx'
 
@@ -136,20 +135,14 @@ export default function UploadScreen() {
   }
 
   const handleSave = async () => {
-    if (!extractedData || !imageFile) return
+    if (!extractedData) return
     setSaving(true)
 
     try {
-      // Upload image to Firebase Storage
-      const storageRef = ref(storage, `scans/${Date.now()}_${imageFile.name}`)
-      const snapshot = await uploadBytes(storageRef, imageFile)
-      const imageUrl = await getDownloadURL(snapshot.ref)
-
       // Build Firestore document
       const docData = {
         ...extractedData,
         date: editedDate || extractedData.date,
-        imageUrl,
         aiAnalysis: aiAnalysis || null,
         createdAt: serverTimestamp(),
       }
