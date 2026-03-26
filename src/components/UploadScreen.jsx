@@ -65,6 +65,7 @@ export default function UploadScreen() {
   const [extractProgress, setExtractProgress] = useState(0)
   const [extractedData, setExtractedData] = useState(null)
   const [editedDate, setEditedDate] = useState('')
+  const [editedMetrics, setEditedMetrics] = useState({})
   const [aiAnalysis, setAiAnalysis] = useState(null)
   const [analyzingAI, setAnalyzingAI] = useState(false)
   const [error, setError] = useState('')
@@ -118,6 +119,12 @@ export default function UploadScreen() {
 
       setExtractedData(result.data)
       setEditedDate(result.data.date || new Date().toISOString().split('T')[0])
+      // Pre-populate editable metrics from extracted data
+      const initial = {}
+      Object.entries(result.data).forEach(([k, v]) => {
+        if (k !== 'date' && typeof v === 'number') initial[k] = String(v)
+      })
+      setEditedMetrics(initial)
       setStep('review')
     } catch (err) {
       clearInterval(progressTimer)
@@ -155,9 +162,16 @@ export default function UploadScreen() {
     setSaving(true)
 
     try {
+      // Merge edited numeric values back into extractedData
+      const mergedData = { ...extractedData }
+      Object.entries(editedMetrics).forEach(([k, v]) => {
+        const num = parseFloat(v)
+        mergedData[k] = isNaN(num) ? mergedData[k] : num
+      })
+
       // Build Firestore document
       const docData = {
-        ...extractedData,
+        ...mergedData,
         date: editedDate || extractedData.date,
         aiAnalysis: aiAnalysis || null,
         createdAt: serverTimestamp(),
@@ -184,6 +198,7 @@ export default function UploadScreen() {
     setExtractProgress(0)
     setExtractedData(null)
     setEditedDate('')
+    setEditedMetrics({})
     setAiAnalysis(null)
     setError('')
     setSaving(false)
@@ -360,23 +375,37 @@ export default function UploadScreen() {
           />
         </div>
 
-        {/* Metrics grid */}
+        {/* Metrics grid — editable */}
         <div
           className="rounded-xl p-4"
           style={{ backgroundColor: '#111128', border: '1px solid #1e1e3a' }}
         >
           <p className="text-xs font-semibold mb-3" style={{ color: '#94a3b8' }}>
-            EXTRACTED METRICS
+            EXTRACTED METRICS — tap any value to edit
           </p>
           <div className="grid grid-cols-2 gap-3">
             {displayFields.map(([key, label]) => (
               <div key={key} className="rounded-lg p-3" style={{ backgroundColor: '#0f0f1a' }}>
                 <p className="text-xs" style={{ color: '#64748b' }}>{label}</p>
-                <p className="text-base font-bold mt-0.5" style={{ color: '#f1f5f9' }}>
-                  {typeof extractedData[key] === 'object'
-                    ? JSON.stringify(extractedData[key])
-                    : String(extractedData[key])}
-                </p>
+                {typeof extractedData[key] === 'object' ? (
+                  <p className="text-sm font-bold mt-0.5" style={{ color: '#f1f5f9' }}>
+                    {JSON.stringify(extractedData[key])}
+                  </p>
+                ) : (
+                  <input
+                    type="number"
+                    step="any"
+                    value={editedMetrics[key] ?? String(extractedData[key])}
+                    onChange={(e) => setEditedMetrics((prev) => ({ ...prev, [key]: e.target.value }))}
+                    className="w-full mt-1 rounded px-2 py-1 text-base font-bold"
+                    style={{
+                      backgroundColor: '#1a1a3e',
+                      border: '1px solid #2e2e5a',
+                      color: '#f1f5f9',
+                      outline: 'none',
+                    }}
+                  />
+                )}
               </div>
             ))}
           </div>
